@@ -1,0 +1,101 @@
+/* Общие стили */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Темная тема */
+.container.dark-theme {
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    text-align: center;
+}
+
+.container.dark-theme h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+#heart {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    margin: 20px 0;
+    transition: transform 0.2s ease;
+}
+
+#heart:active {
+    transform: scale(1.2);
+}
+
+.container.dark-theme button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-size: 16px;
+    border-radius: 25px;
+    margin: 10px 0;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.container.dark-theme button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.container.dark-theme button:active {
+    transform: scale(0.98);
+}
+
+.container.dark-theme p {
+    margin-top: 20px;
+    font-size: 1.1rem;
+}
+
+/* Анимация биения */
+.heartbeat-active {
+    animation: beat 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes beat {
+    0%   { transform: scale(1); }
+    100% { transform: scale(1.2); }
+}
+
+/* Адаптация под мобильные устройства */
+@media (max-width: 600px) {
+    .container.dark-theme h1 {
+        font-size: 2.2rem;
+    }
+
+    #heart {
+        width: 80px;
+        height: 80px;
+    }
+
+    .container.dark-theme button {
+        font-size: 14px;
+        padding: 12px 24px;
+    }
+
+    .container.dark-theme p {
+        font-size: 1rem;
+    }
+}
