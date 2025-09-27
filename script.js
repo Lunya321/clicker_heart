@@ -9,9 +9,7 @@ const farmCountDisplay = document.getElementById('farmCount');
 const currentLevelDisplay = document.getElementById('currentLevel');
 const upgradeList = document.getElementById('upgradeList');
 
-const nicknameForm = document.getElementById('nicknameForm');
-const nicknameInput = document.getElementById('nicknameInput');
-const submitNicknameBtn = document.getElementById('submitNickname');
+const saveRecordBtn = document.getElementById('saveRecordBtn');
 const leaderboardList = document.getElementById('leaderboardList');
 
 const infoBtn = document.getElementById('infoBtn');
@@ -58,7 +56,6 @@ function handleClick() {
     if (count > maxRecord) {
         maxRecord = count;
         record.textContent = maxRecord;
-        checkRecord(); // Проверяем рекорд и открываем форму
     }
 
     // Анимация сердца
@@ -79,24 +76,18 @@ function saveToLocalStorage() {
     localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
 }
 
-// Проверка рекорда и открытие формы
-function checkRecord() {
-    nicknameForm.style.display = 'block';
-    nicknameInput.focus();
-}
+// Обработка сохранения рекорда
+function saveRecord() {
+    const name = prompt("Введите ваш никнейм для сохранения рекорда:", "");
 
-// Обработка подтверждения никнейма
-submitNicknameBtn.addEventListener('click', () => {
-    const name = nicknameInput.value.trim();
-    if (name && count > 0) {
+    if (name && name.trim() !== "") {
         leaderboard.push({ name, score: count });
-        nicknameForm.style.display = 'none';
-        nicknameInput.value = '';
         updateLeaderboard();
+        alert(`Рекорд ${count} сохранён под никнеймом "${name}"!`);
     } else {
-        alert("Введите никнейм!");
+        alert("Вы не ввели никнейм.");
     }
-});
+}
 
 // Обновление таблицы лидеров
 function updateLeaderboard() {
@@ -114,6 +105,7 @@ function updateLeaderboard() {
 
 // Назначаем обработчики событий
 heart.addEventListener('click', handleClick);
+saveRecordBtn.addEventListener('click', saveRecord);
 
 // Сброс
 resetBtn.addEventListener('click', () => {
