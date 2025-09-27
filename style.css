@@ -1,196 +1,247 @@
-// Сохраняем ссылки на элементы
-const counter = document.getElementById('counter');
-const record = document.getElementById('record');
-const heart = document.getElementById('heart');
-const resetBtn = document.getElementById('resetBtn');
-const farmBtn = document.getElementById('farmBtn');
-const upgradeFarmBtn = document.getElementById('upgradeFarmBtn');
-const farmCountDisplay = document.getElementById('farmCount');
-const currentLevelDisplay = document.getElementById('currentLevel');
-const upgradeList = document.getElementById('upgradeList');
-
-const saveRecordBtn = document.getElementById('saveRecordBtn');
-const leaderboardList = document.getElementById('leaderboardList');
-
-const infoBtn = document.getElementById('infoBtn');
-const modal = document.getElementById('infoModal');
-const closeBtn = document.querySelector('.close-btn');
-
-// Загрузка данных из localStorage
-let count = parseInt(localStorage.getItem('count')) || 0;
-let maxRecord = parseInt(localStorage.getItem('maxRecord')) || 0;
-let farmCount = parseInt(localStorage.getItem('farmCount')) || 0;
-let farmLevel = parseInt(localStorage.getItem('farmLevel')) || 0;
-
-// Загрузка таблицы лидеров
-let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-
-// Обновляем интерфейс при загрузке
-counter.textContent = count;
-record.textContent = maxRecord;
-farmCountDisplay.textContent = farmCount;
-currentLevelDisplay.textContent = farmLevel + 1;
-
-// Определяем уровни улучшений фарма
-const farmUpgrades = [
-    { level: 1, cost: 100, gain: 1 },
-    { level: 2, cost: 1000, gain: 2 },
-    { level: 3, cost: 5000, gain: 5 },
-    { level: 4, cost: 10000, gain: 10 },
-    { level: 5, cost: 20000, gain: 20 }
-];
-
-// Показываем список уровней
-farmUpgrades.forEach((upgrade) => {
-    const li = document.createElement('li');
-    li.textContent = `Ур. ${upgrade.level}: +${upgrade.gain}/сек за ${upgrade.cost}`;
-    upgradeList.appendChild(li);
-});
-
-// Функция увеличения счетчика
-function handleClick() {
-    count++;
-    counter.textContent = count;
-
-    // Обновление рекорда
-    if (count > maxRecord) {
-        maxRecord = count;
-        record.textContent = maxRecord;
-    }
-
-    // Анимация сердца
-    heart.classList.add('heartbeat-active');
-    setTimeout(() => {
-        heart.classList.remove('heartbeat-active');
-    }, 200);
-
-    saveToLocalStorage();
+/* Общие стили */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-// Сохранение в localStorage
-function saveToLocalStorage() {
-    localStorage.setItem('count', count);
-    localStorage.setItem('maxRecord', maxRecord);
-    localStorage.setItem('farmCount', farmCount);
-    localStorage.setItem('farmLevel', farmLevel);
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-// Обработка сохранения рекорда
-function saveRecord() {
-    const name = prompt("Введите ваш никнейм для сохранения рекорда:", "");
-
-    if (name && name.trim() !== "") {
-        leaderboard.push({ name, score: count });
-        updateLeaderboard();
-        alert(`Рекорд ${count} сохранён под никнеймом "${name}"!`);
-    } else {
-        alert("Вы не ввели никнейм.");
-    }
+.container.dark-theme {
+    max-width: 1200px;
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
-// Обновление таблицы лидеров
-function updateLeaderboard() {
-    leaderboard = leaderboard.sort((a, b) => b.score - a.score).slice(0, 10);
-
-    leaderboardList.innerHTML = '';
-    leaderboard.forEach((entry, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${index + 1}. ${entry.name} - ${entry.score}`;
-        leaderboardList.appendChild(li);
-    });
-
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 20px;
+    padding: 20px;
 }
 
-// Назначаем обработчики событий
-heart.addEventListener('click', handleClick);
-saveRecordBtn.addEventListener('click', saveRecord);
+.left-panel, .right-panel {
+    flex: 1;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
 
-// Сброс
-resetBtn.addEventListener('click', () => {
-    count = 0;
-    counter.textContent = count;
+.center-section {
+    flex: 2;
+    text-align: center;
+    margin-top: 0;
+}
 
-    if (count > maxRecord) {
-        maxRecord = count;
+.heart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.heart-container img {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.heart-container img:active {
+    transform: scale(1.2);
+}
+
+.center-section h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.center-section p {
+    margin-top: 10px;
+    font-size: 1.1rem;
+}
+
+.center-section button {
+    margin-top: 10px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #4a90e2, #5ac7fa);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.center-section button:hover {
+    background: linear-gradient(135deg, #5ac7fa, #4a90e2);
+    transform: scale(1.05);
+}
+
+.right-panel button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #4a90e2, #5ac7fa);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.right-panel button:hover {
+    background: linear-gradient(135deg, #5ac7fa, #4a90e2);
+    transform: scale(1.05);
+}
+
+.right-panel p {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.upgrades-info ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.upgrades-info li {
+    margin: 6px 0;
+    color: #ccc;
+}
+
+.info-btn {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #29b6f6;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.info-btn:hover {
+    background-color: #0288d1;
+}
+
+.leaderboard {
+    margin-top: 20px;
+    background-color: #1e1e1e;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.leaderboard h3 {
+    color: #5ac7fa;
+}
+
+.leaderboard ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.leaderboard li {
+    margin: 6px 0;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.nickname-form {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #2c2c2c;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nickname-form input {
+    padding: 10px;
+    width: 200px;
+    border-radius: 8px;
+    border: none;
+    margin-right: 10px;
+}
+
+.nickname-form button {
+    padding: 10px 20px;
+    background-color: #5ac7fa;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.nickname-form button:hover {
+    background-color: #0288d1;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    background-color: #1e1e1e;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: white;
+    text-decoration: none;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+        align-items: center;
     }
 
-    record.textContent = maxRecord;
-
-    saveToLocalStorage();
-});
-
-// Купить фарм
-farmBtn.addEventListener('click', () => {
-    if (count >= 100) {
-        count -= 100;
-        counter.textContent = count;
-        farmCount += 1;
-        farmCountDisplay.textContent = farmCount;
-        saveToLocalStorage();
-
-        alert("Вы купили фарм! Теперь вы получаете +1 клик в секунду.");
-    } else {
-        alert("Недостаточно кликов (нужно минимум 100).");
+    .left-panel, .right-panel {
+        width: 100%;
+        margin-bottom: 20px;
     }
-});
-
-// Улучшить фарм
-upgradeFarmBtn.addEventListener('click', () => {
-    const nextLevel = farmLevel + 1;
-    if (nextLevel >= farmUpgrades.length) {
-        alert("Вы достигли максимального уровня фарма!");
-        return;
-    }
-
-    const upgrade = farmUpgrades[nextLevel];
-    if (count >= upgrade.cost) {
-        count -= upgrade.cost;
-        counter.textContent = count;
-        farmCount += upgrade.gain;
-        farmCountDisplay.textContent = farmCount;
-        farmLevel = nextLevel;
-        currentLevelDisplay.textContent = nextLevel + 1;
-        saveToLocalStorage();
-
-        alert(`Вы улучшили фарм до уровня ${nextLevel + 1}! Теперь вы получаете +${upgrade.gain} клика в секунду.`);
-    } else {
-        alert(`Недостаточно кликов для улучшения до уровня ${nextLevel + 1} (нужно ${upgrade.cost}).`);
-    }
-});
-
-// Автоматический фарм каждую секунду
-setInterval(() => {
-    if (farmCount > 0) {
-        count += farmCount;
-        counter.textContent = count;
-
-        if (count > maxRecord) {
-            maxRecord = count;
-            record.textContent = maxRecord;
-        }
-
-        saveToLocalStorage();
-    }
-}, 1000);
-
-// Открыть модальное окно
-infoBtn.addEventListener('click', () => {
-    modal.style.display = 'block';
-});
-
-// Закрыть модальное окно
-closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-// Закрыть модальное окно при клике вне окна
-window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-});
-
-// Инициализация таблицы лидеров при загрузке
-updateLeaderboard();
+}
