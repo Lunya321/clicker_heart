@@ -16,6 +16,7 @@
                 <ul id="upgradeList"></ul>
             </div>
             <button id="infoBtn" class="info-btn">ℹ️ Информация</button>
+            <button id="statsBtn" class="info-btn">📊 Статистика</button>
         </div>
 
         <!-- Центральная секция: счётчик, сердце -->
@@ -35,6 +36,30 @@
             <button id="upgradeFarmBtn" title="Улучшает фарм за 1000+ кликов (+2/сек)">⚡ Улучшить фарм (Ур. <span id="currentLevel">1</span>)</button>
             <p>Фармов куплено: <span id="farmCount">0</span></p>
         </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="stats">
+        <h3>📊 Статистика</h3>
+        <ul>
+            <li>Кликов: <span id="totalClicks">0</span></li>
+            <li>Фармов куплено: <span id="farmCountStat">0</span></li>
+            <li>Улучшений фарма: <span id="upgradesCount">0</span></li>
+            <li>Время игры: <span id="gameTime">0:00</span></li>
+            <li>Кликов/сек: <span id="clicksPerSecond">0</span></li>
+        </ul>
+    </div>
+
+    <!-- Кнопка выбора темы -->
+    <div class="theme-switcher">
+        <label for="themeSelect">🎨 Тема:</label>
+        <select id="themeSelect">
+            <option value="dark">Тёмная</option>
+            <option value="light">Светлая</option>
+            <option value="fruit">Фруктовая</option>
+            <option value="ocean">Морская</option>
+            <option value="hacker">Хакерская</option>
+        </select>
     </div>
 
     <!-- Таблица лидеров -->
