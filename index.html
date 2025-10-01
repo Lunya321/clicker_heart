@@ -50,6 +50,27 @@
         </ul>
     </div>
 
+    <!-- Награды -->
+    <div class="achievements">
+        <h3>🏆 Награды</h3>
+        <ul id="achievementList"></ul>
+    </div>
+
+    <!-- Мини-игра: босс -->
+    <div class="mini-game">
+        <h3>🐉 Мини-игра: Победи босса</h3>
+        <button id="bossBtn" class="info-btn">⚔️ Вызвать босса</button>
+        <div id="bossModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>🐉 Босс напал!</h2>
+                <p>У босса <span id="bossHealth">100</span> здоровья.</p>
+                <button id="attackBtn">🗡️ Нанести удар</button>
+                <p id="bossResult"></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Кнопка выбора темы -->
     <div class="theme-switcher">
         <label for="themeSelect">🎨 Тема:</label>
