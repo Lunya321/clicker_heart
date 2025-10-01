@@ -27,6 +27,7 @@ const gameTimeDisplay = document.getElementById('gameTime');
 const clicksPerSecondDisplay = document.getElementById('clicksPerSecond');
 
 // Загрузка данных из localStorage
+let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 let count = parseInt(localStorage.getItem('count')) || 0;
 let maxRecord = parseInt(localStorage.getItem('maxRecord')) || 0;
 let farmCount = parseInt(localStorage.getItem('farmCount')) || 0;
@@ -262,3 +263,130 @@ updateLeaderboard();
 // Загрузка темы из localStorage
 let savedTheme = localStorage.getItem('appTheme') || 'dark';
 document.querySelector('.container').classList.add(`${savedTheme}-theme`);
+
+// Список достижений (наград)
+const achievements = [
+    { name: "Первый клик", description: "Вы нажали на сердце!", condition: () => totalClicks >= 1 },
+    { name: "100 кликов", description: "Вы достигли 100 кликов!", condition: () => totalClicks >= 100 },
+    { name: "Купил первый фарм", description: "Вы купили свой первый фарм!", condition: () => farmCount >= 1 },
+    { name: "Улучшил фарм", description: "Вы улучшили свой фарм!", condition: () => upgradesCount >= 1 },
+    { name: "10 минут в игре", description: "Вы провели в игре 10 минут!", condition: () => gameTimeDisplay.textContent.includes("10:") },
+    { name: "1000 кликов", description: "Вы достигли 1000 кликов!", condition: () => totalClicks >= 1000 },
+    { name: "10 фармов", description: "Вы купили 10 фармов!", condition: () => farmCount >= 10 },
+    { name: "1 час в игре", description: "Вы провели в игре 1 час!", condition: () => gameTimeDisplay.textContent.includes("60:") },
+    { name: "10000 кликов", description: "Вы достигли 10000 кликов!", condition: () => totalClicks >= 10000 },
+    { name: "Мастер фарма", description: "Вы достигли максимального уровня фарма!", condition: () => farmLevel >= 4 }
+];
+
+// Элемент списка достижений
+const achievementList = document.getElementById('achievementList');
+
+// Функция для проверки достижений
+function checkAchievements() {
+    achievements.forEach((achievement, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${achievement.name} - ${achievement.description}`;
+        if (!achievement.unlocked) {
+            li.classList.add('locked');
+        } else {
+            li.style.color = '#5ac7fa';
+        }
+        achievementList.appendChild(li);
+    });
+}
+
+// Проверяем достижения при загрузке
+checkAchievements();
+
+// Проверяем достижения каждые 10 секунд
+setInterval(() => {
+    let anyUnlocked = false;
+
+    achievements.forEach((achievement, index) => {
+        if (!achievement.unlocked && achievement.condition()) {
+            achievement.unlocked = true;
+            achievementList.innerHTML = ''; // Очистить список
+            checkAchievements(); // Перерисовать
+            alert(`Поздравляем! Вы получили награду: "${achievement.name}"`);
+            anyUnlocked = true;
+        }
+    });
+
+    // Сохраняем достижения
+    localStorage.setItem('achievements', JSON.stringify(achievements));
+}, 10000);
+
+// Загрузка достижений из localStorage
+let savedAchievements = localStorage.getItem('achievements');
+if (savedAchievements) {
+    achievements = JSON.parse(savedAchievements);
+}
+// Мини-игра: босс
+const bossBtn = document.getElementById('bossBtn');
+const bossModal = document.getElementById('bossModal');
+const attackBtn = document.getElementById('attackBtn');
+const bossHealthDisplay = document.getElementById('bossHealth');
+const bossResult = document.getElementById('bossResult');
+
+let bossHealth = 100;
+let bossDefeated = false;
+
+// Загрузка сохранённого прогресса из localStorage
+let savedBossProgress = localStorage.getItem('bossProgress');
+if (savedBossProgress) {
+    const progress = JSON.parse(savedBossProgress);
+    bossHealth = progress.health;
+    bossDefeated = progress.defeated;
+    bossHealthDisplay.textContent = bossHealth;
+}
+
+// Открытие модального окна босса
+bossBtn.addEventListener('click', () => {
+    if (bossDefeated) {
+        alert("Вы уже победили этого босса!");
+        return;
+    }
+    bossModal.style.display = 'block';
+});
+
+// Закрытие модального окна
+document.querySelector('#bossModal .close-btn').addEventListener('click', () => {
+    bossModal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === bossModal) {
+        bossModal.style.display = 'none';
+    }
+});
+
+// Атака на босса
+attackBtn.addEventListener('click', () => {
+    if (bossDefeated) {
+        alert("Вы уже победили этого босса!");
+        return;
+    }
+
+    const damage = Math.floor(Math.random() * 10) + 5; // Урон от 5 до 15
+    bossHealth -= damage;
+    bossHealthDisplay.textContent = bossHealth;
+
+    if (bossHealth <= 0) {
+        bossHealth = 0;
+        bossHealthDisplay.textContent = bossHealth;
+        bossResult.textContent = "🎉 Вы победили босса!";
+        bossDefeated = true;
+
+        // Награда за победу
+        count += 100;
+        counter.textContent = count;
+        alert("Вы получили +100 кликов за победу над боссом!");
+
+        saveToLocalStorage();
+    } else {
+        bossResult.textContent = `💥 Вы нанесли ${damage} урона. Осталось: ${bossHealth}`;
+    }
+
+    // Сохранение прогресса
+    localStorage.setItem('bossProgress', JSON.stringify({ health: bossHealth, defeated: bossDefeated }));
+});
