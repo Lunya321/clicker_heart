@@ -310,3 +310,48 @@ body {
         margin-bottom: 20px;
     }
 }
+.achievements {
+    flex: 1;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.achievements h3 {
+    margin-bottom: 10px;
+    color: #5ac7fa;
+}
+
+.achievements ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.achievements li {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.achievements li.locked {
+    color: #999;
+    text-decoration: line-through;
+}
+.mini-game {
+    flex: 1;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.mini-game h3 {
+    margin-bottom: 10px;
+    color: #5ac7fa;
+}
+
+#bossModal .modal-content {
+    max-width: 600px;
+    text-align: center;
+}
